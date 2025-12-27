@@ -2,6 +2,7 @@ package com.plataformtrade.domain.VOs;
 
 import java.util.Objects;
 
+@SuppressWarnings("ClassCanBeRecord")
 public final class Document {
     private static final int VALID_LENGTH = 11;
     private final String value;

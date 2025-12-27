@@ -1,5 +1,6 @@
 package com.plataformtrade.domain.VOs;
 
+@SuppressWarnings("ClassCanBeRecord")
 public final class Name {
     private final String value;
 
