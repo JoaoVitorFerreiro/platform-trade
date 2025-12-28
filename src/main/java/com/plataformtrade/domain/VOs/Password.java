@@ -28,6 +28,24 @@ public final class Password {
         this.hasDigit = DIGIT_PATTERN.matcher(value).matches();
     }
 
+    private Password(String value, boolean skipValidation) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        if (!skipValidation && !isValid(value)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        this.value = value;
+
+        this.hasLowerCase = LOWERCASE_PATTERN.matcher(value).matches();
+        this.hasUpperCase = UPPERCASE_PATTERN.matcher(value).matches();
+        this.hasDigit = DIGIT_PATTERN.matcher(value).matches();
+    }
+
+    public static Password fromHashed(String hashed) {
+        return new Password(hashed, true);
+    }
+
     private boolean isValid(String password) {
         if (password == null || password.isEmpty()) {
             return false;

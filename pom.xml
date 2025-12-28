@@ -184,6 +184,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Boot Rest Test Client (for TestRestTemplate in Spring Boot 4.0) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring Boot Rest Client (runtime dependency for TestRestTemplate) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient</artifactId>
+        </dependency>
+
         <!-- Spring Security Test -->
         <dependency>
             <groupId>org.springframework.security</groupId>

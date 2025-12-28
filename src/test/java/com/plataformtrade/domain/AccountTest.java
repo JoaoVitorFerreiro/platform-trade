@@ -4,6 +4,7 @@ import com.plataformtrade.domain.VOs.Document;
 import com.plataformtrade.domain.VOs.Email;
 import com.plataformtrade.domain.VOs.Name;
 import com.plataformtrade.domain.VOs.Password;
+import com.plataformtrade.domain.repositories.PasswordHasher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -15,6 +16,17 @@ class AccountTest {
     private static final String VALID_CPF_1 = "12345678909";
     private static final String VALID_CPF_2 = "11144477735";
     private static final String VALID_CPF_3 = "52998224725";
+    private static final PasswordHasher PASSWORD_HASHER = new PasswordHasher() {
+        @Override
+        public String hash(String password) {
+            return "hashed-" + password;
+        }
+
+        @Override
+        public boolean matches(String password, String hash) {
+            return hash.equals(hash(password));
+        }
+    };
 
     @Test
     @DisplayName("Should create a new account with generated ID")
@@ -23,7 +35,8 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         assertNotNull(account);
@@ -31,7 +44,7 @@ class AccountTest {
         assertEquals(36, account.getAccountId().length());
         assertEquals("Joao Silva", account.getName().getValue());
         assertEquals(VALID_CPF_1, account.getDocument().getValue());
-        assertEquals("Senha123", account.getPassword().getValue());
+        assertEquals("hashed-Senha123", account.getPassword().getValue());
         assertEquals("joao@email.com", account.getEmail().getValue());
     }
 
@@ -44,7 +57,7 @@ class AccountTest {
                 accountId,
                 "Maria Santos",
                 VALID_CPF_2,
-                "Password1",
+                "hashed-Password1",
                 "maria@email.com"
         );
 
@@ -52,7 +65,7 @@ class AccountTest {
         assertEquals(accountId, account.getAccountId());
         assertEquals("Maria Santos", account.getName().getValue());
         assertEquals(VALID_CPF_2, account.getDocument().getValue());
-        assertEquals("Password1", account.getPassword().getValue());
+        assertEquals("hashed-Password1", account.getPassword().getValue());
         assertEquals("maria@email.com", account.getEmail().getValue());
     }
 
@@ -78,7 +91,8 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         account.setName("Joao Pedro");
@@ -93,7 +107,8 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         account.setEmail(new Email("novo@email.com"));
@@ -108,7 +123,8 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         account.setPassword(new Password("NovaSenha123"));
@@ -123,7 +139,8 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         account.setDocument(new Document(VALID_CPF_2));
@@ -139,7 +156,8 @@ class AccountTest {
                     "J",
                     VALID_CPF_1,
                     "Senha123",
-                    "joao@email.com"
+                    "joao@email.com",
+                    PASSWORD_HASHER
             );
         });
     }
@@ -152,7 +170,8 @@ class AccountTest {
                     "Joao Silva",
                     "99999999999",
                     "Senha123",
-                    "joao@email.com"
+                    "joao@email.com",
+                    PASSWORD_HASHER
             );
         });
     }
@@ -165,7 +184,8 @@ class AccountTest {
                     "Joao Silva",
                     VALID_CPF_1,
                     "123",
-                    "joao@email.com"
+                    "joao@email.com",
+                    PASSWORD_HASHER
             );
         });
     }
@@ -178,7 +198,8 @@ class AccountTest {
                     "Joao Silva",
                     VALID_CPF_1,
                     "Senha123",
-                    "email-invalido"
+                    "email-invalido",
+                    PASSWORD_HASHER
             );
         });
     }
@@ -190,14 +211,16 @@ class AccountTest {
                 "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         Account account2 = Account.create(
                 "Maria Santos",
                 VALID_CPF_2,
                 "Password1",
-                "maria@email.com"
+                "maria@email.com",
+                PASSWORD_HASHER
         );
 
         assertNotEquals(account1.getAccountId(), account2.getAccountId());
@@ -211,7 +234,7 @@ class AccountTest {
                 originalId,
                 "Joao Silva",
                 VALID_CPF_1,
-                "Senha123",
+                "hashed-Senha123",
                 "joao@email.com"
         );
 
@@ -225,7 +248,8 @@ class AccountTest {
                 "Joao Silva",
                 "123.456.789-09",
                 "Senha123",
-                "joao@email.com"
+                "joao@email.com",
+                PASSWORD_HASHER
         );
 
         assertEquals("12345678909", account.getDocument().getValue());

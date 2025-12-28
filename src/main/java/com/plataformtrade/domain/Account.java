@@ -4,8 +4,10 @@ import com.plataformtrade.domain.VOs.Document;
 import com.plataformtrade.domain.VOs.Email;
 import com.plataformtrade.domain.VOs.Name;
 import com.plataformtrade.domain.VOs.Password;
+import com.plataformtrade.domain.repositories.PasswordHasher;
 
 import java.util.UUID;
+import java.util.Objects;
 
 public class Account {
     private final String accountId;
@@ -23,13 +25,42 @@ public class Account {
         this.email = new Email(email);
     }
 
-    public static Account create(String name, String document, String password, String email){
+    private Account(String accountId, Name name, Document document, Password password, Email email) {
+        this.accountId = accountId;
+        this.name = name;
+        this.document = document;
+        this.password = password;
+        this.email = email;
+    }
+
+    public static Account create(
+            String name,
+            String document,
+            String password,
+            String email,
+            PasswordHasher passwordHasher
+    ){
+        Objects.requireNonNull(passwordHasher, "passwordHasher must not be null");
         String accountId = UUID.randomUUID().toString();
-        return new Account(accountId, name, document, password, email);
+        Password rawPassword = new Password(password);
+        String passwordHashed = passwordHasher.hash(rawPassword.getValue());
+        return new Account(
+                accountId,
+                new Name(name),
+                new Document(document),
+                Password.fromHashed(passwordHashed),
+                new Email(email)
+        );
     }
 
     public static Account restore(String accountId, String name, String document, String password, String email) {
-        return new Account(accountId, name, document, password, email);
+        return new Account(
+                accountId,
+                new Name(name),
+                new Document(document),
+                Password.fromHashed(password),
+                new Email(email)
+        );
     }
 
     public String getAccountId(){

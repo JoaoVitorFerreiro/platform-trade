@@ -5,23 +5,33 @@ import com.plataformtrade.application.dtos.CreateAccountRequest;
 import com.plataformtrade.domain.Account;
 import com.plataformtrade.domain.exceptions.NotFoundException;
 import com.plataformtrade.domain.repositories.AccountRepository;
+import com.plataformtrade.domain.repositories.PasswordHasher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final PasswordHasher passwordHasher;
 
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public AccountService(AccountRepository accountRepository, PasswordHasher passwordHasher) {
+        this.accountRepository = Objects.requireNonNull(accountRepository, "accountRepository must not be null");
+        this.passwordHasher = Objects.requireNonNull(passwordHasher, "passwordHasher must not be null");
     }
 
     @Transactional
     public AccountResponse createAccount(CreateAccountRequest request){
-        Account account = Account.create(request.name(), request.document(), request.password(), request.email());
+        Account account = Account.create(
+                request.name(),
+                request.document(),
+                request.password(),
+                request.email(),
+                passwordHasher
+        );
         Account savedAccount = accountRepository.save(account);
 
         return new AccountResponse(
