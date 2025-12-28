@@ -18,7 +18,7 @@ public final class Email {
     }
 
     private boolean isValid(String email) {
-        if (email == null || email.trim().isEmpty()) {
+        if (email == null) {
             return false;
         }
 

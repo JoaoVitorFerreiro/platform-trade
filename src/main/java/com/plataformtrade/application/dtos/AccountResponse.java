@@ -1,4 +1,4 @@
 package com.plataformtrade.application.dtos;
 
-public record AccountResponse(String accountId, String name) {
+public record AccountResponse(String accountId, String name, String email, String document) {
 }

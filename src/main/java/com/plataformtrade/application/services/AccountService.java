@@ -21,12 +21,14 @@ public class AccountService {
 
     @Transactional
     public AccountResponse createAccount(CreateAccountRequest request){
-        Account account = Account.create(request.name());
+        Account account = Account.create(request.name(), request.document(), request.password(), request.email());
         Account savedAccount = accountRepository.save(account);
 
         return new AccountResponse(
                 savedAccount.getAccountId(),
-                savedAccount.getName().getValue()
+                savedAccount.getName().getValue(),
+                savedAccount.getEmail().getValue(),
+                savedAccount.getDocument().getValue()
         );
     }
 
@@ -37,7 +39,9 @@ public class AccountService {
 
         return new AccountResponse(
                 account.getAccountId(),
-                account.getName().getValue()
+                account.getName().getValue(),
+                account.getEmail().getValue(),
+                account.getDocument().getValue()
         );
     }
 
@@ -47,7 +51,9 @@ public class AccountService {
                 .stream()
                 .map(account -> new AccountResponse(
                         account.getAccountId(),
-                        account.getName().getValue()
+                        account.getName().getValue(),
+                        account.getEmail().getValue(),
+                        account.getDocument().getValue()
                 ))
                 .collect(Collectors.toList());
     }

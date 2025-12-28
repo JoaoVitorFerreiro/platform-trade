@@ -25,7 +25,10 @@ public class AccountRepositoryImpl implements AccountRepository {
     public Account save(Account account) {
         AccountEntity entity = new AccountEntity(
                 account.getAccountId(),
-                account.getName()
+                account.getName().getValue(),
+                account.getDocument().getValue(),
+                account.getPassword().getValue(),
+                account.getEmail().getValue()
         );
         jpaRepository.save(entity);
         return account;
@@ -36,7 +39,10 @@ public class AccountRepositoryImpl implements AccountRepository {
         return jpaRepository.findById(accountId)
                 .map(entity -> Account.restore(
                         entity.getAccountId(),
-                        entity.getName()
+                        entity.getName(),
+                        entity.getDocument(),
+                        entity.getPassword(),
+                        entity.getEmail()
                 ));
     }
 
@@ -46,13 +52,16 @@ public class AccountRepositoryImpl implements AccountRepository {
                 .stream()
                 .map(entity -> Account.restore(
                         entity.getAccountId(),
-                        entity.getName()
+                        entity.getName(),
+                        entity.getDocument(),
+                        entity.getPassword(),
+                        entity.getEmail()
                 ))
                 .collect(Collectors.toList());
     }
 
     @Override
     public void deleteById(String accountId) {
-
+        jpaRepository.deleteById(accountId);
     }
 }
