@@ -4,156 +4,82 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Name Value Object Tests")
 class NameTest {
 
-    @Test
-    @DisplayName("Should create valid name with single word")
-    void shouldCreateValidNameWithSingleWord() {
-        // Arrange
-        String validName = "John";
-
-        // Act
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "João Silva",
+            "Maria Santos",
+            "José",
+            "Ana",
+            "José da Silva Santos",
+            "Pedro Álvares Cabral"
+    })
+    @DisplayName("Should create valid names")
+    void shouldCreateValidNames(String validName) {
         Name name = new Name(validName);
 
-        // Assert
         assertNotNull(name);
-        assertEquals("John", name.getValue());
+        assertEquals(validName.trim(), name.getValue());
     }
 
     @ParameterizedTest
-    @DisplayName("Should create valid name with various formats")
-    @ValueSource(strings = {"John", "MARY", "alice", "JoHn", "A"})
-    void shouldCreateValidNameWithVariousFormats(String validName) {
-        // Act
-        Name name = new Name(validName);
-
-        // Assert
-        assertNotNull(name);
-        assertEquals(validName, name.getValue());
+    @ValueSource(strings = {
+            "",
+            " ",
+            "A",
+            "João123",
+            "Maria@Silva",
+            "Pedro#Santos"
+    })
+    @DisplayName("Should throw exception for invalid names")
+    void shouldThrowExceptionForInvalidNames(String invalidName) {
+        assertThrows(IllegalArgumentException.class, () -> new Name(invalidName));
     }
 
     @Test
-    @DisplayName("Should throw exception for null name")
-    void shouldThrowExceptionForNullName() {
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name(null)
-        );
-
-        assertEquals("Invalid name", exception.getMessage());
+    @DisplayName("Should throw exception when name is null")
+    void shouldThrowExceptionWhenNameIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Name(null));
     }
 
-    @ParameterizedTest
-    @DisplayName("Should throw exception for empty or blank name")
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    void shouldThrowExceptionForEmptyOrBlankName(String invalidName) {
-        // Act & Assert
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name(invalidName)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("Should throw exception for name with numbers")
-    @ValueSource(strings = {"John123", "123", "John1", "1John"})
-    void shouldThrowExceptionForNameWithNumbers(String invalidName) {
-        // Act & Assert
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name(invalidName)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("Should throw exception for name with special characters")
-    @ValueSource(strings = {"John@", "John!", "Jo#hn", "John$", "John%", "Jo&hn"})
-    void shouldThrowExceptionForNameWithSpecialCharacters(String invalidName) {
-        // Act & Assert
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name(invalidName)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("Should throw exception for name with spaces")
-    @ValueSource(strings = {"John Doe", "Mary Jane", " John", "John ", "Jo hn"})
-    void shouldThrowExceptionForNameWithSpaces(String invalidName) {
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name(invalidName)
-        );
-
-        assertEquals("Invalid name", exception.getMessage());
+    @Test
+    @DisplayName("Should trim whitespace")
+    void shouldTrimWhitespace() {
+        Name name = new Name("  João Silva  ");
+        assertEquals("João Silva", name.getValue());
     }
 
     @Test
     @DisplayName("Should be equal when names are the same")
     void shouldBeEqualWhenNamesAreTheSame() {
-        // Arrange
-        Name name1 = new Name("John");
-        Name name2 = new Name("John");
+        Name name1 = new Name("João Silva");
+        Name name2 = new Name("João Silva");
 
-        // Act & Assert
-        assertEquals(name1.getValue(), name2.getValue());
+        assertEquals(name1, name2);
+        assertEquals(name1.hashCode(), name2.hashCode());
     }
 
     @Test
     @DisplayName("Should not be equal when names are different")
     void shouldNotBeEqualWhenNamesAreDifferent() {
-        // Arrange
-        Name name1 = new Name("John");
-        Name name2 = new Name("Mary");
+        Name name1 = new Name("João Silva");
+        Name name2 = new Name("Maria Santos");
 
-        // Act & Assert
-        assertNotEquals(name1.getValue(), name2.getValue());
+        assertNotEquals(name1, name2);
     }
 
     @Test
-    @DisplayName("Should be case sensitive")
-    void shouldBeCaseSensitive() {
-        // Arrange
-        Name name1 = new Name("John");
-        Name name2 = new Name("john");
+    @DisplayName("Should accept names with accents")
+    void shouldAcceptNamesWithAccents() {
+        Name name1 = new Name("João");
+        Name name2 = new Name("María");
 
-        // Act & Assert
-        assertNotEquals(name1.getValue(), name2.getValue());
-    }
-
-    @Test
-    @DisplayName("Should throw exception for name with accents")
-    void shouldThrowExceptionForNameWithAccents() {
-        // Arrange & Act & Assert
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name("João")
-        );
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Name("María")
-        );
-    }
-
-    @Test
-    @DisplayName("Should preserve original value")
-    void shouldPreserveOriginalValue() {
-        // Arrange
-        String originalValue = "Alice";
-
-        // Act
-        Name name = new Name(originalValue);
-
-        // Assert
-        assertEquals(originalValue, name.getValue());
-        assertSame(originalValue, name.getValue());
+        assertEquals("João", name1.getValue());
+        assertEquals("María", name2.getValue());
     }
 }

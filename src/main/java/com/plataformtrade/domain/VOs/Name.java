@@ -4,18 +4,33 @@ import java.util.Objects;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class Name {
+    private static final int MIN_LENGTH = 2;
+    private static final int MAX_LENGTH = 100;
+
     private final String value;
 
-    public Name(String value){
-        if(!isValid(value)) throw new IllegalArgumentException("Invalid name");
-        this.value = value;
+    public Name(String value) {
+        if (!isValid(value)) {
+            throw new IllegalArgumentException("Invalid name");
+        }
+        this.value = value.trim();
     }
 
-    private boolean isValid(String value) {
-        return value != null && value.matches("[a-zA-Z]+");
+    private boolean isValid(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+
+        String trimmed = name.trim();
+
+        if (trimmed.length() < MIN_LENGTH || trimmed.length() > MAX_LENGTH) {
+            return false;
+        }
+
+        return trimmed.matches("^[a-zA-ZÀ-ÿ]+([ '-][a-zA-ZÀ-ÿ]+)*$");
     }
 
-    public String getValue(){
+    public String getValue() {
         return this.value;
     }
 

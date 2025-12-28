@@ -20,7 +20,7 @@ class AccountTest {
     @DisplayName("Should create a new account with generated ID")
     void shouldCreateNewAccountWithGeneratedId() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
@@ -29,7 +29,7 @@ class AccountTest {
         assertNotNull(account);
         assertNotNull(account.getAccountId());
         assertEquals(36, account.getAccountId().length());
-        assertEquals("JoaoSilva", account.getName().getValue());
+        assertEquals("Joao Silva", account.getName().getValue());
         assertEquals(VALID_CPF_1, account.getDocument().getValue());
         assertEquals("Senha123", account.getPassword().getValue());
         assertEquals("joao@email.com", account.getEmail().getValue());
@@ -42,7 +42,7 @@ class AccountTest {
 
         Account account = Account.restore(
                 accountId,
-                "MariaSantos",
+                "Maria Santos",
                 VALID_CPF_2,
                 "Password1",
                 "maria@email.com"
@@ -50,7 +50,7 @@ class AccountTest {
 
         assertNotNull(account);
         assertEquals(accountId, account.getAccountId());
-        assertEquals("MariaSantos", account.getName().getValue());
+        assertEquals("Maria Santos", account.getName().getValue());
         assertEquals(VALID_CPF_2, account.getDocument().getValue());
         assertEquals("Password1", account.getPassword().getValue());
         assertEquals("maria@email.com", account.getEmail().getValue());
@@ -61,36 +61,36 @@ class AccountTest {
     void shouldCreateAccountUsingConstructor() {
         Account account = new Account(
                 "testid",
-                "PedroOliveira",
+                "Pedro Oliveira",
                 VALID_CPF_3,
                 "Test1234",
                 "pedro@email.com"
         );
 
         assertEquals("testid", account.getAccountId());
-        assertEquals("PedroOliveira", account.getName().getValue());
+        assertEquals("Pedro Oliveira", account.getName().getValue());
     }
 
     @Test
     @DisplayName("Should update name")
     void shouldUpdateName() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
         );
 
-        account.setName("JoaoPedro");
+        account.setName("Joao Pedro");
 
-        assertEquals("JoaoPedro", account.getName().getValue());
+        assertEquals("Joao Pedro", account.getName().getValue());
     }
 
     @Test
     @DisplayName("Should update email")
     void shouldUpdateEmail() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
@@ -105,7 +105,7 @@ class AccountTest {
     @DisplayName("Should update password")
     void shouldUpdatePassword() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
@@ -120,7 +120,7 @@ class AccountTest {
     @DisplayName("Should update document")
     void shouldUpdateDocument() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
@@ -136,7 +136,7 @@ class AccountTest {
     void shouldThrowExceptionWhenCreatingAccountWithInvalidName() {
         assertThrows(IllegalArgumentException.class, () -> {
             Account.create(
-                    "João Silva",
+                    "J",
                     VALID_CPF_1,
                     "Senha123",
                     "joao@email.com"
@@ -149,7 +149,7 @@ class AccountTest {
     void shouldThrowExceptionWhenCreatingAccountWithInvalidDocument() {
         assertThrows(IllegalArgumentException.class, () -> {
             Account.create(
-                    "JoaoSilva",
+                    "Joao Silva",
                     "99999999999",
                     "Senha123",
                     "joao@email.com"
@@ -162,7 +162,7 @@ class AccountTest {
     void shouldThrowExceptionWhenCreatingAccountWithInvalidPassword() {
         assertThrows(IllegalArgumentException.class, () -> {
             Account.create(
-                    "JoaoSilva",
+                    "Joao Silva",
                     VALID_CPF_1,
                     "123",
                     "joao@email.com"
@@ -175,7 +175,7 @@ class AccountTest {
     void shouldThrowExceptionWhenCreatingAccountWithInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () -> {
             Account.create(
-                    "JoaoSilva",
+                    "Joao Silva",
                     VALID_CPF_1,
                     "Senha123",
                     "email-invalido"
@@ -187,14 +187,14 @@ class AccountTest {
     @DisplayName("Should generate different IDs for different accounts")
     void shouldGenerateDifferentIdsForDifferentAccounts() {
         Account account1 = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
         );
 
         Account account2 = Account.create(
-                "MariaSantos",
+                "Maria Santos",
                 VALID_CPF_2,
                 "Password1",
                 "maria@email.com"
@@ -209,7 +209,7 @@ class AccountTest {
         String originalId = "fixedid";
         Account account = Account.restore(
                 originalId,
-                "JoaoSilva",
+                "Joao Silva",
                 VALID_CPF_1,
                 "Senha123",
                 "joao@email.com"
@@ -222,7 +222,7 @@ class AccountTest {
     @DisplayName("Should accept CPF with formatting and store without it")
     void shouldAcceptCpfWithFormattingAndStoreWithoutIt() {
         Account account = Account.create(
-                "JoaoSilva",
+                "Joao Silva",
                 "123.456.789-09",
                 "Senha123",
                 "joao@email.com"

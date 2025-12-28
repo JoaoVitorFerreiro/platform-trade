@@ -3,18 +3,21 @@ package com.plataformtrade.infra.persistence.repositories;
 import com.plataformtrade.domain.Account;
 import com.plataformtrade.domain.repositories.AccountRepository;
 import com.plataformtrade.infra.persistence.entities.AccountEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 interface AccountJpaRepository extends JpaRepository<AccountEntity, String> {
 }
 
 @Repository
 public class AccountRepositoryImpl implements AccountRepository {
+    private static final Logger logger = LoggerFactory.getLogger(AccountRepositoryImpl.class);
     private final AccountJpaRepository jpaRepository;
 
     public AccountRepositoryImpl(AccountJpaRepository jpaRepository) {
@@ -48,16 +51,32 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> findAll() {
-        return jpaRepository.findAll()
-                .stream()
-                .map(entity -> Account.restore(
+        List<AccountEntity> entities = jpaRepository.findAll();
+        List<Account> accounts = new ArrayList<>(entities.size());
+
+        for (AccountEntity entity : entities) {
+            try {
+                accounts.add(Account.restore(
                         entity.getAccountId(),
                         entity.getName(),
                         entity.getDocument(),
                         entity.getPassword(),
                         entity.getEmail()
-                ))
-                .collect(Collectors.toList());
+                ));
+            } catch (RuntimeException ex) {
+                logger.error(
+                        "Failed to map AccountEntity: accountId={}, name={}, document={}, email={}",
+                        entity.getAccountId(),
+                        entity.getName(),
+                        entity.getDocument(),
+                        entity.getEmail(),
+                        ex
+                );
+                throw ex;
+            }
+        }
+
+        return accounts;
     }
 
     @Override
