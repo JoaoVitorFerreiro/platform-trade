@@ -4,10 +4,14 @@ import com.plataformtrade.domain.VOs.Document;
 import com.plataformtrade.domain.VOs.Email;
 import com.plataformtrade.domain.VOs.Name;
 import com.plataformtrade.domain.VOs.Password;
+import com.plataformtrade.domain.events.AccountCreatedEvent;
+import com.plataformtrade.domain.events.DomainEvent;
 import com.plataformtrade.domain.repositories.PasswordHasher;
 
 import java.util.UUID;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Account {
     private final String accountId;
@@ -15,6 +19,7 @@ public class Account {
     private Document document;
     private Password password;
     private Email email;
+    private final List<DomainEvent> domainEvents = new ArrayList<>();
 
 
     public Account(String accountId, String name, String document, String password, String email) {
@@ -44,13 +49,20 @@ public class Account {
         String accountId = UUID.randomUUID().toString();
         Password rawPassword = new Password(password);
         String passwordHashed = passwordHasher.hash(rawPassword.getValue());
-        return new Account(
+        Account account = new Account(
                 accountId,
                 new Name(name),
                 new Document(document),
                 Password.fromHashed(passwordHashed),
                 new Email(email)
         );
+        account.addDomainEvent(new AccountCreatedEvent(
+                accountId,
+                account.getName().getValue(),
+                account.getEmail().getValue(),
+                account.getDocument().getValue()
+        ));
+        return account;
     }
 
     public static Account restore(String accountId, String name, String document, String password, String email) {
@@ -97,5 +109,15 @@ public class Account {
 
     public void setPassword(Password password) {
         this.password = password;
+    }
+
+    public List<DomainEvent> pullDomainEvents() {
+        List<DomainEvent> events = new ArrayList<>(domainEvents);
+        domainEvents.clear();
+        return events;
+    }
+
+    private void addDomainEvent(DomainEvent event) {
+        domainEvents.add(event);
     }
 }

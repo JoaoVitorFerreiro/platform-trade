@@ -30,6 +30,35 @@ spring:
     locations: classpath:db/migration
     validate-on-migrate: true
 
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+
+messaging:
+  rabbit:
+    enabled: true
+    exchange: account.events
+    queues:
+      account-created: account.created
+
+resilience:
+  rabbit:
+    circuitbreaker:
+      failure-rate-threshold: 50
+      sliding-window-size: 10
+      wait-duration-open-state-seconds: 10
+      permitted-calls-in-half-open-state: 3
+    retry:
+      max-attempts: 3
+      wait-duration-ms: 500
+
+external:
+  health:
+    enabled: false
+    url:
+
 logging:
   level:
     root: INFO
