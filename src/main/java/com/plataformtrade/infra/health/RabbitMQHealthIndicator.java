@@ -1,9 +1,10 @@
 package com.plataformtrade.infra.health;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,7 @@ public class RabbitMQHealthIndicator implements HealthIndicator {
     @Override
     public Health health() {
         try (var connection = connectionFactory.createConnection()) {
-            if (connection != null && connection.isOpen()) {
+            if (connection.isOpen()) {
                 return Health.up().withDetail("rabbitmq", "reachable").build();
             }
             return Health.down().withDetail("rabbitmq", "connection closed").build();

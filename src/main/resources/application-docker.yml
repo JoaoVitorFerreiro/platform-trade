@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: plataformtrade
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -58,6 +60,23 @@ external:
   health:
     enabled: false
     url:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://jaeger:4318/v1/traces
+      protocol: http/protobuf
 
 logging:
   level:

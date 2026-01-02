@@ -15,12 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Account REST Controller
- *
- * This controller delegates to specific use cases following Clean Architecture principles.
- * Each endpoint is mapped to a single use case with a clear business intention.
- */
 @RestController
 @RequestMapping("/api/v1/accounts")
 @Tag(name = "Accounts", description = "API de gerenciamento de contas")
